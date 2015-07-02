@@ -4,7 +4,7 @@
 import subprocess
 import sys
 
-class NetshWLAN():
+class NetshWLAN:
     def __init__(self):
         pass
 
@@ -18,7 +18,7 @@ class NetshWLAN():
         out_raw, err_raw = p.communicate()
         out_decoded = out_raw.decode(sys.stdout.encoding)
         out = out_decoded.split('\r\n')
-        return(out)
+        return out
 
     def show_networks(self, interface=None, mode=None):
         cmd = "netsh wlan show networks"
