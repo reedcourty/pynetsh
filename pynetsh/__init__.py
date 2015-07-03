@@ -10,7 +10,7 @@ class Network:
         self.bssid_number = bssid_number
 
     def __repr__(self):
-        return self.name
+        return "{}({})".format(self.name, self.bssid_number)
 
 class NetshWLAN:
     def __init__(self):
@@ -49,7 +49,12 @@ class NetshWLAN:
         
 
         for i in list_of_raw_networks:
-            self.networks.append(Network(i[0].split(" : ")[1]))
+            network_name = i[0].split(" : ")[1]
+            if (mode=="bssid"):
+                network_ssid = i[4].split(": ")[1].replace(" ", "")
+            else:
+                network_ssid = None
+            self.networks.append(Network(network_name, network_ssid))
 
 
 
