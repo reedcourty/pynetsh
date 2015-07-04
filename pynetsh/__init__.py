@@ -4,6 +4,39 @@
 import subprocess
 import sys
 
+class NetshParser:
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def parse_wlan_show_networks(netsh_output, mode):
+        list_of_raw_networks = []
+        raw_network = []
+        for line in netsh_output[4:]:
+            if (line == ''):
+                list_of_raw_networks.append(raw_network)
+                raw_network = []
+            else:
+                raw_network.append(line)
+
+        list_of_raw_networks = list_of_raw_networks[0:-1]
+
+        networks = []
+
+        for i in list_of_raw_networks:
+            network_name = i[0].split(" : ")[1]
+            network_type = i[1].split(": ")[1]
+            if (mode=="bssid"):
+                try:
+                    network_ssid = i[4].split(": ")[1].replace(" ", "")
+                except IndexError as ie:
+                    network_ssid = None
+            else:
+                network_ssid = None
+            networks.append(Network(network_name, network_ssid, network_type=network_type))
+
+        return networks
+
 class Network:
     def __init__(self, name, bssid_number=None, network_type = None):
         self.name = name
@@ -35,6 +68,9 @@ class NetshWLAN:
         p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out_raw, err_raw = p.communicate()
 
+        if show:
+            return out_raw
+
         out_decoded = out_raw.decode(sys.stdout.encoding)
         out = out_decoded.split('\r\n')
         if (len(out)==2):
@@ -42,39 +78,7 @@ class NetshWLAN:
 
         number_of_networks = [int(s) for s in out[2].split() if s.isdigit()][0]
 
-        list_of_raw_networks = []
-        raw_network = []
-        for line in out[4:]:
-            if (line == ''):
-                list_of_raw_networks.append(raw_network)
-                raw_network = []
-            else:
-                raw_network.append(line)
-
-        list_of_raw_networks = list_of_raw_networks[0:-1]
-        
-        #print(number_of_networks)
-        
-
-        for i in list_of_raw_networks:
-            network_name = i[0].split(" : ")[1]
-            network_type = i[1].split(": ")[1]
-            if (mode=="bssid"):
-                network_ssid = i[4].split(": ")[1].replace(" ", "")
-            else:
-                network_ssid = None
-            self.networks.append(Network(network_name, network_ssid, network_type=network_type))
-
-
-
-
-        if show:
-            return out_raw
-
-
-        
-        
-        #for i in xrange(4, len(out), )
+        self.networks = NetshParser.parse_wlan_show_networks(out, mode)
 
         return self.networks
 

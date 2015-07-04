@@ -7,7 +7,7 @@ import pynetsh
 
 class NetshWLANTestCase(unittest.TestCase):
 
-    @unittest.skip(None)
+    #@unittest.skip(None)
     def test_show_networks(self):
         # Arrange
         netshwlan = pynetsh.NetshWLAN()
