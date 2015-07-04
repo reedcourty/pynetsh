@@ -5,9 +5,17 @@ import subprocess
 import sys
 
 class Network:
-    def __init__(self, name, bssid_number=None):
+    def __init__(self, name, bssid_number=None, network_type = None):
         self.name = name
         self.bssid_number = bssid_number
+        self.network_type = network_type
+
+    def show_infos(self):
+        attrs = vars(self)
+        
+        for a in attrs.items():
+            print(a)
+        
 
     def __repr__(self):
         return "{}({})".format(self.name, self.bssid_number)
@@ -50,11 +58,12 @@ class NetshWLAN:
 
         for i in list_of_raw_networks:
             network_name = i[0].split(" : ")[1]
+            network_type = i[1].split(": ")[1]
             if (mode=="bssid"):
                 network_ssid = i[4].split(": ")[1].replace(" ", "")
             else:
                 network_ssid = None
-            self.networks.append(Network(network_name, network_ssid))
+            self.networks.append(Network(network_name, network_ssid, network_type=network_type))
 
 
 

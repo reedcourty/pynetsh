@@ -25,7 +25,8 @@ class NetshWLANTestCase(unittest.TestCase):
     def test_get_networks(self):
         # Arrange
         netshwlan = pynetsh.NetshWLAN()
-        print(netshwlan.get_networks(mode="bssid"))
+        for network in netshwlan.get_networks(mode="bssid"):
+            network.show_infos()
         # Act
         
         expected = True
