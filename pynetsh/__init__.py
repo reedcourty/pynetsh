@@ -27,7 +27,7 @@ class NetshParser:
             network_name = i[0].split(" : ")[1]
             network_type = i[1].split(": ")[1]
             authentication = i[2].split(": ")[1]
-            signal_strenght = i[5].split(": ")[1].replace(" ", "").replace("%", "")
+            signal_strenght = int(i[5].split(": ")[1].replace(" ", "").replace("%", ""))
             if (mode=="bssid"):
                 try:
                     network_ssid = i[4].split(": ")[1].replace(" ", "")
@@ -61,7 +61,7 @@ class NetshWLAN:
     def __init__(self):
         self.networks = []
 
-    def get_networks(self, interface=None, mode=None, show=False):
+    def get_networks(self, interface=None, mode=None, show=False, signal_limit = 0):
         if (mode not in ["bssid", "ssid", None]):
             raise Exception("Wrong mode parameter is specified.")
         cmd = "netsh wlan show networks"
@@ -82,7 +82,12 @@ class NetshWLAN:
 
         number_of_networks = [int(s) for s in out[2].split() if s.isdigit()][0]
 
-        self.networks = NetshParser.parse_wlan_show_networks(out, mode)
+        networks = NetshParser.parse_wlan_show_networks(out, mode)
+
+        for n in networks:
+            if (n.signal_strenght >= signal_limit):
+                print(n.signal_strenght)
+                self.networks.append(n)
 
         return self.networks
 
