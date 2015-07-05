@@ -84,6 +84,7 @@ class NetshWLAN:
 
         networks = NetshParser.parse_wlan_show_networks(out, mode)
 
+        self.networks = []
         for n in networks:
             if (n.signal_strenght >= signal_limit):
                 self.networks.append(n)
