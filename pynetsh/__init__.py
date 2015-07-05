@@ -27,7 +27,7 @@ class NetshParser:
             network_name = i[0].split(" : ")[1]
             network_type = i[1].split(": ")[1]
             authentication = i[2].split(": ")[1]
-            signal_strenght = i[5].split(": ")[1].replace(" ", "")
+            signal_strenght = i[5].split(": ")[1].replace(" ", "").replace("%", "")
             if (mode=="bssid"):
                 try:
                     network_ssid = i[4].split(": ")[1].replace(" ", "")
