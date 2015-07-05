@@ -86,7 +86,6 @@ class NetshWLAN:
 
         for n in networks:
             if (n.signal_strenght >= signal_limit):
-                print(n.signal_strenght)
                 self.networks.append(n)
 
         return self.networks
