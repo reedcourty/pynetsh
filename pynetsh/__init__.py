@@ -27,25 +27,28 @@ class NetshParser:
             network_name = i[0].split(" : ")[1]
             network_type = i[1].split(": ")[1]
             authentication = i[2].split(": ")[1]
+            encryption_method = i[3].split(": ")[1].replace(" ", "")
             signal_strenght = int(i[5].split(": ")[1].replace(" ", "").replace("%", ""))
             if (mode=="bssid"):
                 try:
                     network_ssid = i[4].split(": ")[1].replace(" ", "")
-                except IndexError as ie:
+                except IndexError:
                     network_ssid = None
             else:
                 network_ssid = None
-            networks.append(Network(network_name, network_ssid, network_type=network_type, authentication=authentication, signal_strenght=signal_strenght))
+            networks.append(Network(network_name, network_ssid, network_type=network_type, authentication=authentication, encryption_method=encryption_method, signal_strenght=signal_strenght))
 
         return networks
 
 class Network:
-    def __init__(self, name, bssid_number=None, network_type = None, authentication=None, signal_strenght=None):
+    def __init__(self, name, bssid_number=None, network_type = None, authentication=None, encryption_method = None, signal_strenght=None):
         self.name = name
         self.bssid_number = bssid_number
         self.network_type = network_type
         self.authentication = authentication
+        self.encryption_method = encryption_method
         self.signal_strenght = signal_strenght
+
 
     def show_infos(self):
         attrs = vars(self)
