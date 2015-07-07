@@ -30,6 +30,7 @@ class NetshParser:
             encryption_method = i[3].split(": ")[1].replace(" ", "")
             signal_strenght = int(i[5].split(": ")[1].replace(" ", "").replace("%", ""))
             radio_type = i[6].split(": ")[1].replace(" ", "")
+            channel = int(i[7].split(": ")[1].replace(" ", ""))
             if (mode=="bssid"):
                 try:
                     network_ssid = i[4].split(": ")[1].replace(" ", "")
@@ -37,12 +38,12 @@ class NetshParser:
                     network_ssid = None
             else:
                 network_ssid = None
-            networks.append(Network(network_name, network_ssid, network_type=network_type, authentication=authentication, encryption_method=encryption_method, signal_strenght=signal_strenght, radio_type=radio_type))
+            networks.append(Network(network_name, network_ssid, network_type=network_type, authentication=authentication, encryption_method=encryption_method, signal_strenght=signal_strenght, radio_type=radio_type, channel=channel))
 
         return networks
 
 class Network:
-    def __init__(self, name, bssid_number=None, network_type = None, authentication=None, encryption_method = None, signal_strenght=None, radio_type=None):
+    def __init__(self, name, bssid_number=None, network_type = None, authentication=None, encryption_method = None, signal_strenght=None, radio_type=None, channel=None):
         self.name = name
         self.bssid_number = bssid_number
         self.network_type = network_type
@@ -50,6 +51,7 @@ class Network:
         self.encryption_method = encryption_method
         self.signal_strenght = signal_strenght
         self.radio_type = radio_type
+        self.channel = channel
 
 
     def show_infos(self):
