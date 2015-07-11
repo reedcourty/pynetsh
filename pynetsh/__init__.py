@@ -32,6 +32,7 @@ class NetshParser:
             radio_type = i[6].split(": ")[1].replace(" ", "")
             channel = int(i[7].split(": ")[1].replace(" ", ""))
             basic_rates = [float(x) for x in i[8].split(": ")[1].split(" ")]
+            other_rates = [float(x) for x in i[9].split(": ")[1].split(" ")]
             if (mode=="bssid"):
                 try:
                     network_ssid = i[4].split(": ")[1].replace(" ", "")
@@ -48,13 +49,14 @@ class NetshParser:
                 signal_strenght=signal_strenght,
                 radio_type=radio_type,
                 channel=channel,
-                basic_rates=basic_rates))
+                basic_rates=basic_rates,
+                other_rates=other_rates))
 
         return networks
 
 class Network:
     def __init__(self, name, bssid_number=None, network_type = None, authentication=None, encryption_method = None,
-        signal_strenght=None, radio_type=None, channel=None, basic_rates=None):
+        signal_strenght=None, radio_type=None, channel=None, basic_rates=None, other_rates=None):
         self.name = name
         self.bssid_number = bssid_number
         self.network_type = network_type
@@ -64,6 +66,7 @@ class Network:
         self.radio_type = radio_type
         self.channel = channel
         self.basic_rates = basic_rates
+        self.other_rates = other_rates
 
 
     def show_infos(self):
