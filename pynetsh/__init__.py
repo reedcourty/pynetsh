@@ -54,6 +54,12 @@ class NetshParser:
 
         return networks
 
+
+    @staticmethod
+    def parse_wlan_show_networks(netsh_output):
+        pass
+
+
 class Network:
     def __init__(self, name, bssid_number=None, network_type = None, authentication=None, encryption_method = None,
         signal_strenght=None, radio_type=None, channel=None, basic_rates=None, other_rates=None):
@@ -92,6 +98,7 @@ class Profile:
 class NetshWLAN:
     def __init__(self):
         self.networks = []
+        self.profiles = []
 
     def get_networks(self, interface=None, mode=None, show=False, signal_limit = 0):
         if (mode not in ["bssid", "ssid", None]):
@@ -131,7 +138,23 @@ class NetshWLAN:
         Szintaxis: show profiles [[name=]<karakterlánc>] [[interface=]<karakterlánc>]
            [key=<karakterlánc>]
         """
-        pass
+        cmd = "netsh wlan show profiles"
+        p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out_raw, err_raw = p.communicate()
+
+        if show:
+            return out_raw
+        
+        out_decoded = out_raw.decode(sys.stdout.encoding)
+        out = out_decoded.split('\r\n')
+        
+        profiles = NetshParser.parse_wlan_show_profiles(out)
+
+        self.profiles = []
+        for p in profiles:
+            self.profiles.append(p)
+
+        return self.profiles
 
     def show_profiles(self, name=None, interface=None, key=None):
         print(self.get_profiles(name, interface, key, show=True))
