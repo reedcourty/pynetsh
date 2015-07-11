@@ -79,6 +79,16 @@ class Network:
     def __repr__(self):
         return "{}({})".format(self.name, self.bssid_number)
 
+
+class Profile:
+    def __init__(self, name):
+        self.name = name
+
+
+    def __repr__(self):
+        return "{}".format(self.name)
+
+
 class NetshWLAN:
     def __init__(self):
         self.networks = []
@@ -115,3 +125,13 @@ class NetshWLAN:
 
     def show_networks(self, interface=None, mode=None):
         print(self.get_networks(interface, mode, show=True))
+
+    def get_profiles(self, name=None, interface=None, key=None, show=False):
+        """
+        Szintaxis: show profiles [[name=]<karakterlánc>] [[interface=]<karakterlánc>]
+           [key=<karakterlánc>]
+        """
+        pass
+
+    def show_profiles(self, name=None, interface=None, key=None):
+        print(self.get_profiles(name, interface, key, show=True))

@@ -7,7 +7,7 @@ import pynetsh
 
 class NetshWLANTestCase(unittest.TestCase):
 
-    #@unittest.skip(None)
+    @unittest.skip(None)
     def test_show_networks(self):
         # Arrange
         netshwlan = pynetsh.NetshWLAN()
@@ -21,7 +21,7 @@ class NetshWLANTestCase(unittest.TestCase):
         # Assert
         self.assertEqual(expected, actual, msg='Expected "{}", but get "{}"'.format(expected, actual))
 
-    #@unittest.skip(None)
+    @unittest.skip(None)
     def test_get_networks(self):
         # Arrange
         netshwlan = pynetsh.NetshWLAN()
@@ -32,6 +32,19 @@ class NetshWLANTestCase(unittest.TestCase):
         expected = True
         actual = True
         
+        # Assert
+        self.assertEqual(expected, actual, msg='Expected "{}", but get "{}"'.format(expected, actual))
+
+    #@unittest.skip(None)
+    def test_get_profiles(self):
+        # Arrange
+        netshwlan = pynetsh.NetshWLAN()
+        netshwlan.show_profiles()
+
+        # Act
+        expected = True
+        actual = True
+
         # Assert
         self.assertEqual(expected, actual, msg='Expected "{}", but get "{}"'.format(expected, actual))
 
