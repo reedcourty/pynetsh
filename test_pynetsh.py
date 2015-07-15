@@ -36,10 +36,24 @@ class NetshWLANTestCase(unittest.TestCase):
         self.assertEqual(expected, actual, msg='Expected "{}", but get "{}"'.format(expected, actual))
 
     #@unittest.skip(None)
-    def test_get_profiles(self):
+    def test_show_profiles(self):
         # Arrange
         netshwlan = pynetsh.NetshWLAN()
         netshwlan.show_profiles()
+
+        # Act
+        expected = True
+        actual = True
+
+        # Assert
+        self.assertEqual(expected, actual, msg='Expected "{}", but get "{}"'.format(expected, actual))
+
+    #@unittest.skip(None)
+    def test_get_profiles(self):
+        # Arrange
+        netshwlan = pynetsh.NetshWLAN()
+        for profile in netshwlan.get_profiles():
+            print(profile)
 
         # Act
         expected = True

@@ -56,8 +56,31 @@ class NetshParser:
 
 
     @staticmethod
-    def parse_wlan_show_networks(netsh_output):
-        pass
+    def parse_wlan_show_profiles(netsh_output):
+
+        profiles = []
+        section_id = 0
+
+        content = [[],[],[]]
+
+        for line in netsh_output:
+            if "--" in line:
+                section_id = section_id + 1
+            else:
+                content[section_id].append(line)
+
+        # TODO: add group policy support!
+        
+        # Parse Current User Profiles:
+        for line in content[2]:
+            if (line!=''):
+                p = Profile(name=line.split(": ")[1].strip(), profile_type="Current User Profile")
+                profiles.append(p)
+
+        return profiles
+
+
+
 
 
 class Network:
@@ -87,8 +110,9 @@ class Network:
 
 
 class Profile:
-    def __init__(self, name):
+    def __init__(self, name, profile_type=None):
         self.name = name
+        self.profile_type = profile_type
 
 
     def __repr__(self):
