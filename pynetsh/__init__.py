@@ -114,6 +114,11 @@ class Profile:
         self.name = name
         self.profile_type = profile_type
 
+    def show_infos(self):
+        attrs = vars(self)
+        
+        for a in attrs.items():
+            print(a)
 
     def __repr__(self):
         return "{}".format(self.name)

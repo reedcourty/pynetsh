@@ -53,7 +53,7 @@ class NetshWLANTestCase(unittest.TestCase):
         # Arrange
         netshwlan = pynetsh.NetshWLAN()
         for profile in netshwlan.get_profiles():
-            print(profile)
+            profile.show_infos()
 
         # Act
         expected = True
