@@ -80,6 +80,25 @@ class NetshParser:
         return profiles
 
 
+    @staticmethod
+    def parse_wlan_show_profiles_name(netsh_output):
+
+        section_id = 0
+
+        content = [[],[],[],[]]
+
+        for line in netsh_output:
+            if "--" in line:
+                section_id = section_id + 1
+            else:
+                content[section_id].append(line)
+
+        name = content[1][2].split(": ")[1]
+        p = Profile(name)
+
+        return [p]
+
+
 
 
 
@@ -110,9 +129,10 @@ class Network:
 
 
 class Profile:
-    def __init__(self, name, profile_type=None):
+    def __init__(self, name, profile_type=None, authentication=None):
         self.name = name
         self.profile_type = profile_type
+        self.authentication = authentication
 
     def show_infos(self):
         attrs = vars(self)
@@ -167,7 +187,11 @@ class NetshWLAN:
         Szintaxis: show profiles [[name=]<karakterlánc>] [[interface=]<karakterlánc>]
            [key=<karakterlánc>]
         """
-        cmd = "netsh wlan show profiles"
+
+        if name is not None:
+            cmd = 'netsh wlan show profiles name="{}" key=clear'.format(name)
+        else:
+            cmd = "netsh wlan show profiles"
         p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out_raw, err_raw = p.communicate()
 
@@ -177,7 +201,10 @@ class NetshWLAN:
         out_decoded = out_raw.decode(sys.stdout.encoding)
         out = out_decoded.split('\r\n')
         
-        profiles = NetshParser.parse_wlan_show_profiles(out)
+        if name is not None:
+            profiles = NetshParser.parse_wlan_show_profiles_name(out)
+        else:
+            profiles = NetshParser.parse_wlan_show_profiles(out)
 
         self.profiles = []
         for p in profiles:
