@@ -4,6 +4,14 @@
 import subprocess
 import sys
 
+def decode_console(out_raw):
+    try:
+        out_decoded = out_raw.decode(sys.stdout.encoding)
+    except UnicodeDecodeError:
+        out_decoded = out_raw.decode('iso-8859-2')
+    return out_decoded
+    
+
 class NetshParser:
     def __init__(self):
         pass
@@ -163,7 +171,7 @@ class NetshWLAN:
         if show:
             return out_raw
 
-        out_decoded = out_raw.decode(sys.stdout.encoding)
+        out_decoded = decode_console(out_raw)
         out = out_decoded.split('\r\n')
         if (len(out)==2):
             raise Exception("The command ({}) failed :(".format(cmd))
@@ -198,7 +206,7 @@ class NetshWLAN:
         if show:
             return out_raw
         
-        out_decoded = out_raw.decode(sys.stdout.encoding)
+        out_decoded = decode_console(out_raw)
         out = out_decoded.split('\r\n')
         
         if name is not None:
