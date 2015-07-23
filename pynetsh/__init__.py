@@ -1,8 +1,11 @@
 #!python
 # -*- coding: UTF-8 -*-
 
+import logging
 import subprocess
 import sys
+
+logger = logging.getLogger(__name__)
 
 def decode_console(out_raw):
     try:
@@ -157,7 +160,8 @@ class NetshWLAN:
         self.networks = []
         self.profiles = []
 
-    def get_networks(self, interface=None, mode=None, show=False, signal_limit = 0):
+    def get_networks(self, interface=None, mode=None, show=False, signal_limit=0):
+        logger.debug("interface={}, mode={}, show={}, signal_limit={}".format(interface, mode, show, signal_limit))
         if (mode not in ["bssid", "ssid", None]):
             raise Exception("Wrong mode parameter is specified.")
         cmd = "netsh wlan show networks"
@@ -165,8 +169,9 @@ class NetshWLAN:
             cmd = "{} interface={}".format(cmd, interface)
         if mode is not None:
             cmd = "{} mode={}".format(cmd, mode)
+        logger.debug(cmd)
         p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        out_raw, err_raw = p.communicate()
+        out_raw, _ = p.communicate()
 
         if show:
             return out_raw
@@ -176,13 +181,14 @@ class NetshWLAN:
         if (len(out)==2):
             raise Exception("The command ({}) failed :(".format(cmd))
 
-        number_of_networks = [int(s) for s in out[2].split() if s.isdigit()][0]
+        #number_of_networks = [int(s) for s in out[2].split() if s.isdigit()][0]
 
         networks = NetshParser.parse_wlan_show_networks(out, mode)
 
         self.networks = []
         for n in networks:
             if (n.signal_strenght >= signal_limit):
+                logger.debug(n)
                 self.networks.append(n)
 
         return self.networks
@@ -198,8 +204,10 @@ class NetshWLAN:
 
         if name is not None:
             cmd = 'netsh wlan show profiles name="{}" key=clear'.format(name)
+            logger.debug(cmd)
         else:
             cmd = "netsh wlan show profiles"
+            logger.debug(cmd)
         p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out_raw, err_raw = p.communicate()
 
@@ -222,3 +230,7 @@ class NetshWLAN:
 
     def show_profiles(self, name=None, interface=None, key=None):
         print(self.get_profiles(name, interface, key, show=True))
+        
+        
+
+
